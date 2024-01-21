@@ -16,12 +16,19 @@ const explanation = ref(false)
 const rule = ref(false)
 
 const addWord = () => {
-    console.log('今の言ったのは' + usedWord.value)
-    usedWordList.value.push(usedWord.value)
-    usedWord.value = ''
-    console.log('今まで言ったリストは' + usedWordList.value)
-    currentIndex.value = (currentIndex.value + 1) % member.value.length
-    console.log('次は'+member.value[(currentIndex.value) % member.value.length])
+    console.log(usedWord.value)
+    if(usedWord.value === "a"){
+        usedWord.value = ''
+        member.value.splice(currentIndex-1,1)
+        currentIndex.value = (currentIndex.value) % member.value.length
+    }else{
+        console.log('今の言ったのは' + usedWord.value)
+        usedWordList.value.push(usedWord.value)
+        usedWord.value = ''
+        console.log('今まで言ったリストは' + usedWordList.value)
+        currentIndex.value = (currentIndex.value + 1) % member.value.length
+        console.log('次は'+member.value[(currentIndex.value) % member.value.length])
+    }
 }
 
 const openExplanationModal = () => {
