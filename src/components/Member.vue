@@ -1,9 +1,24 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { usePlayer } from '@/stores/pinia.js'
 
-const member = ref(2)
+const members = ref(2)
+const playerNames = ref([])
+const startChecker = ref(false)
+
+const useMember = usePlayer()
+
+watch([() => members.value, () => playerNames.value.length],() => {
+    useMember.setPlayerName(playerNames.value)
+
+    if(playerNames.value.length === members.value){
+        startChecker.value = true
+    }
+})
 
 const startGame = () => {
+    console.log(playerNames.value.length)
+    console.log(members.value)
 }
 
 </script>
@@ -12,13 +27,13 @@ const startGame = () => {
     <div class="modal">
         <div class="modal-content">
             <div>ゲームの参加人数を入力してください</div>
-            <input type="number" class="mt-3 number" v-model="member" :min="2">
-            <div v-if="member" class="mt-3">参加するメンバーの名前を入力してください</div>
-            <div v-for="name in member" :key="name">
-                <input type="text" :value="'プレイヤー' +name" class="mt-3">
+            <input type="number" class="mt-3 number" v-model="members" :min="2">
+            <div v-if="members" class="mt-3">参加するメンバーの名前を入力してください</div>
+            <div v-for="index in members" :key="index">
+                <input type="text" v-model="playerNames[index-1]" class="mt-3">
             </div>
             <div class="toGame">
-                <router-link to="/Top" v-show="member" @click="startGame">ゲームスタート！</router-link>
+                <router-link to="/Top" v-show="startChecker" @click="startGame">ゲームスタート！</router-link>
             </div>
         </div>
     </div>

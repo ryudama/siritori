@@ -18,7 +18,7 @@ const closeModal = () => {
     <div class="modal" @click="closeModal">
         <div class="modal-content" @click.stop>
             <div class="title">ルール説明</div>
-            <div>　　言ってはいけない言葉を言ってしまった人は脱落し、最後の1人になれば勝利</div>
+            <div>　言ってはいけない言葉を言ってしまった人は脱落し、最後の1人になれば勝利</div>
             <ul><div>⭐️言ってはいけない言葉とは⭐️</div>
                 <li>一番最後に「ん」がつく言葉（例：「きりん」）</li>
                 <li>アルファベットが入っている言葉（例:「TV」）</li>
