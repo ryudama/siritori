@@ -16,12 +16,12 @@ const explanation = ref(false)
 const rule = ref(false)
 
 const addWord = () => {
+    console.log('今の言ったのは' + usedWord.value)
     usedWordList.value.push(usedWord.value)
     usedWord.value = ''
+    console.log('今まで言ったリストは' + usedWordList.value)
     currentIndex.value = (currentIndex.value + 1) % member.value.length
-    console.log(currentIndex.value)
-    console.log(usedWord.value)
-    console.log(usedWordList.value)
+    console.log('次は'+member.value[(currentIndex.value) % member.value.length])
 }
 
 const openExplanationModal = () => {
@@ -48,7 +48,8 @@ const pinia = () => {
         <div v-for="(name, index) in member" :key="index">
             <div>{{ name }}
                 <input type="text" v-if="index === currentIndex" v-model="usedWord" class="mt-3 ms-3">
-                <button v-if="index === currentIndex" @click="addWord">回答</button></div>
+                <button v-if="index === currentIndex" @click="addWord">回答</button>
+            </div>
         </div>
 
         <Explanation v-if="explanation" @close="explanation = false"/>
