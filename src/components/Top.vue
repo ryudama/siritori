@@ -12,16 +12,22 @@ const usedWord = ref('')
 const usedWordList = ref([])
 let currentIndex = ref(0)
 
+const disqualification = ref(false)
+
 const explanation = ref(false)
 const rule = ref(false)
 
 const addWord = () => {
-    console.log(usedWord.value)
-    if(usedWord.value === "a"){
+    usedWord.value = usedWord.value.replace(/[\u30a1-\u30f6]/g, match => String.fromCharCode(match.charCodeAt(0) - 0x60))   //ひらがなとカタカナ変換
+
+    if(usedWord.value.slice(-1) === 'ん' ||
+        usedWordList.value.some(word => word === usedWord.value)){
         usedWord.value = ''
         member.value.splice(currentIndex-1,1)
         currentIndex.value = (currentIndex.value) % member.value.length
-    }else{
+        disqualification.value = true
+    }
+    else{
         console.log('今の言ったのは' + usedWord.value)
         usedWordList.value.push(usedWord.value)
         usedWord.value = ''
@@ -29,6 +35,10 @@ const addWord = () => {
         currentIndex.value = (currentIndex.value + 1) % member.value.length
         console.log('次は'+member.value[(currentIndex.value) % member.value.length])
     }
+}
+
+const eraseDisqualification = () => {
+    disqualification.value = false
 }
 
 const openExplanationModal = () => {
@@ -54,11 +64,11 @@ const pinia = () => {
         <button @click="pinia">Pinia確認</button>
         <div v-for="(name, index) in member" :key="index">
             <div>{{ name }}
-                <input type="text" v-if="index === currentIndex" v-model="usedWord" class="mt-3 ms-3">
+                <input type="text" v-if="index === currentIndex" v-model="usedWord" @focus="eraseDisqualification" class="mt-3 ms-3">
                 <button v-if="index === currentIndex" @click="addWord">回答</button>
             </div>
         </div>
-
+        <div v-if="disqualification">言ってはいけない言葉を言ったので失格です</div>
         <Explanation v-if="explanation" @close="explanation = false"/>
         <Rule v-if="rule" @close="rule = false"/>
         
