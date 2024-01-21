@@ -9,12 +9,16 @@ const useMember= usePlayer()
 const member = ref([])
 
 const usedWord = ref('')
+const usedWordList = ref([])
 
 const explanation = ref(false)
 const rule = ref(false)
 
 const addWord = () => {
-    console.log(111)
+    usedWordList.value.push(usedWord.value)
+    usedWord.value = ''
+    console.log(usedWord.value)
+    console.log(usedWordList.value)
 }
 
 const openExplanationModal = () => {
@@ -39,7 +43,7 @@ const pinia = () => {
         <button @click="openRuleModal">ルール</button>
         <button @click="pinia">Pinia確認</button>
         <div v-for="(name, index) in member" :key="index">
-            <div>{{ name }}<input type="text" v-model="usedWord" class="mt-3 ms-3"></div>
+            <div>{{ name }}<input type="text" v-if="index === 0" v-model="usedWord" class="mt-3 ms-3"></div>
             <button @click="addWord">回答</button>
         </div>
 
