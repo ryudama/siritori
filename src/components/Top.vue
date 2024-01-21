@@ -8,14 +8,13 @@ import Rule from './Rule.vue'
 const useMember= usePlayer()
 const member = ref([])
 
-const usedWord = ref([])
+const usedWord = ref('')
 
 const explanation = ref(false)
 const rule = ref(false)
 
 const addWord = () => {
-    usedWord.value.push(...usedWord.value)
-    console.log(usedWord.value)
+    console.log(111)
 }
 
 const openExplanationModal = () => {
@@ -40,7 +39,7 @@ const pinia = () => {
         <button @click="openRuleModal">ルール</button>
         <button @click="pinia">Pinia確認</button>
         <div v-for="(name, index) in member" :key="index">
-            <div>{{ name }}<input type="text" v-model="usedWord[index]" class="mt-3 ms-3"></div>
+            <div>{{ name }}<input type="text" v-model="usedWord" class="mt-3 ms-3"></div>
             <button @click="addWord">回答</button>
         </div>
 
