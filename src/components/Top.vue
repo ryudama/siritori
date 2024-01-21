@@ -10,6 +10,7 @@ const member = ref([])
 
 const usedWord = ref('')
 const usedWordList = ref([])
+let currentIndex = ref(0)
 
 const explanation = ref(false)
 const rule = ref(false)
@@ -17,6 +18,8 @@ const rule = ref(false)
 const addWord = () => {
     usedWordList.value.push(usedWord.value)
     usedWord.value = ''
+    currentIndex.value = (currentIndex.value + 1) % member.value.length
+    console.log(currentIndex.value)
     console.log(usedWord.value)
     console.log(usedWordList.value)
 }
@@ -43,7 +46,7 @@ const pinia = () => {
         <button @click="openRuleModal">ルール</button>
         <button @click="pinia">Pinia確認</button>
         <div v-for="(name, index) in member" :key="index">
-            <div>{{ name }}<input type="text" v-if="index === 0" v-model="usedWord" class="mt-3 ms-3"></div>
+            <div>{{ name }}<input type="text" v-if="index === currentIndex" v-model="usedWord" class="mt-3 ms-3"></div>
             <button @click="addWord">回答</button>
         </div>
 
