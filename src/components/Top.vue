@@ -6,9 +6,17 @@ import Explanation from './Explanation.vue'
 import Rule from './Rule.vue'
 
 const useMember= usePlayer()
+const member = ref([])
+
+const usedWord = ref([])
 
 const explanation = ref(false)
 const rule = ref(false)
+
+const addWord = () => {
+    usedWord.value.push(...usedWord.value)
+    console.log(usedWord.value)
+}
 
 const openExplanationModal = () => {
     explanation.value = !explanation.value
@@ -19,8 +27,9 @@ const openRuleModal = () => {
 }
 
 const pinia = () => {
-    useMember.getPlayerName()
-    console.log(useMember.getPlayerName())
+    member.value = useMember.getPlayerName()
+    console.log("参加者は" + member.value)
+    console.log("参加人数" + member.value.length)
 }
 
 </script>
@@ -30,7 +39,10 @@ const pinia = () => {
         <button @click="openExplanationModal">説明</button>
         <button @click="openRuleModal">ルール</button>
         <button @click="pinia">Pinia確認</button>
-        <div>Top</div>
+        <div v-for="(name, index) in member" :key="index">
+            <div>{{ name }}<input type="text" v-model="usedWord[index]" class="mt-3 ms-3"></div>
+            <button @click="addWord">回答</button>
+        </div>
 
         <Explanation v-if="explanation" @close="explanation = false"/>
         <Rule v-if="rule" @close="rule = false"/>
