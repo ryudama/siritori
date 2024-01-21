@@ -46,8 +46,9 @@ const pinia = () => {
         <button @click="openRuleModal">ルール</button>
         <button @click="pinia">Pinia確認</button>
         <div v-for="(name, index) in member" :key="index">
-            <div>{{ name }}<input type="text" v-if="index === currentIndex" v-model="usedWord" class="mt-3 ms-3"></div>
-            <button @click="addWord">回答</button>
+            <div>{{ name }}
+                <input type="text" v-if="index === currentIndex" v-model="usedWord" class="mt-3 ms-3">
+                <button v-if="index === currentIndex" @click="addWord">回答</button></div>
         </div>
 
         <Explanation v-if="explanation" @close="explanation = false"/>
