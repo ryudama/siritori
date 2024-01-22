@@ -20,50 +20,39 @@ const rule = ref(false)
 
 const addWord = () => {
     usedWord.value = usedWord.value.replace(/[\u30a1-\u30f6]/g, match => String.fromCharCode(match.charCodeAt(0) - 0x60))   //カタカナをひらがなに変換
-    if(usedWordList.value.length === 0 && usedWord.value.slice(-1) !== 'ん' && /^[ぁ-んー]$/u.test(usedWord.value.slice(-1))){    //1人目専用
-        usedWordList.value.push(usedWord.value) //使った言葉リストに格納
-        if(usedWord.value.slice(-1) === 'ー'){  //ー　がついたら、それを削る
-            usedWord.value = usedWord.value.slice(0, -1)
-            console.log(endWord.value)
-        }
-        endWord.value = usedWord.value.slice(-1) //次の言葉の頭として格納
-                            .replace(/っ/g, 'つ')   //小さい文字を大きく変更
-                            .replace(/ゃ/g, 'や')
-                            .replace(/ゅ/g, 'ゆ')
-                            .replace(/ょ/g, 'よ')
-                            .replace(/ぁ/g, 'あ')
-                            .replace(/ぃ/g, 'い')
-                            .replace(/ぅ/g, 'う')
-                            .replace(/ぇ/g, 'え')
-                            .replace(/ぉ/g, 'お')
-        usedWord.value = ''
-        currentIndex.value = (currentIndex.value + 1) % member.value.length
+    if((usedWordList.value.length === 0 && usedWord.value.slice(-1) !== 'ん' && /^[ぁ-んー]$/u.test(usedWord.value.slice(-1)))){    //1人目専用
+        loop()
     }else if(endWord.value !== usedWord.value.slice(0,1) ||  //前の文字と次の文字が合ってない
             usedWord.value.slice(-1) === 'ん' || //ん　がついた時
             !/^[ぁ-んー]$/u.test(usedWord.value.slice(-1)) ||    //ひらがなとー以外を言った時
             usedWordList.value.some(word => word === usedWord.value)){    //前に言ったのと同じ言葉を言った時
-                usedWord.value = ''
-                member.value.splice(currentIndex-1,1)
-                currentIndex.value = (currentIndex.value) % member.value.length
-                disqualification.value = true
-    }else{  //続く時
-        usedWordList.value.push(usedWord.value)
-        if(usedWord.value.slice(-1) === 'ー'){  //ー　がついたら、それを削る
-            usedWord.value = usedWord.value.slice(0, -1)
-        }
-        endWord.value = usedWord.value.slice(-1) //次の言葉の頭として格納
-                            .replace(/っ/g, 'つ')   //小さい文字を大きく変更
-                            .replace(/ゃ/g, 'や')
-                            .replace(/ゅ/g, 'ゆ')
-                            .replace(/ょ/g, 'よ')
-                            .replace(/ぁ/g, 'あ')
-                            .replace(/ぃ/g, 'い')
-                            .replace(/ぅ/g, 'う')
-                            .replace(/ぇ/g, 'え')
-                            .replace(/ぉ/g, 'お')
         usedWord.value = ''
-        currentIndex.value = (currentIndex.value + 1) % member.value.length
+        member.value.splice(currentIndex-1,1)
+        currentIndex.value = (currentIndex.value) % member.value.length
+        disqualification.value = true
+    }else{  //続く時
+        loop()
     }
+}
+
+const loop = () => {
+    usedWordList.value.push(usedWord.value) //使った言葉リストに格納
+    if(usedWord.value.slice(-1) === 'ー'){  //ー　がついたら、それを削る
+        usedWord.value = usedWord.value.slice(0, -1)
+        console.log(endWord.value)
+    }
+    endWord.value = usedWord.value.slice(-1) //次の言葉の頭として格納
+                        .replace(/っ/g, 'つ')   //小さい文字を大きく変更
+                        .replace(/ゃ/g, 'や')
+                        .replace(/ゅ/g, 'ゆ')
+                        .replace(/ょ/g, 'よ')
+                        .replace(/ぁ/g, 'あ')
+                        .replace(/ぃ/g, 'い')
+                        .replace(/ぅ/g, 'う')
+                        .replace(/ぇ/g, 'え')
+                        .replace(/ぉ/g, 'お')
+    usedWord.value = ''
+    currentIndex.value = (currentIndex.value + 1) % member.value.length
 }
 
 const eraseDisqualification = () => {
@@ -100,7 +89,6 @@ const pinia = () => {
         <div v-if="disqualification">言ってはいけない言葉を言ったので失格です</div>
         <Explanation v-if="explanation" @close="explanation = false"/>
         <Rule v-if="rule" @close="rule = false"/>
-        
     </div>
 </template>
 
