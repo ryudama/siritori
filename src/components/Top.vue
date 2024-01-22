@@ -20,7 +20,7 @@ const rule = ref(false)
 const addWord = () => {
     usedWord.value = usedWord.value.replace(/[\u30a1-\u30f6]/g, match => String.fromCharCode(match.charCodeAt(0) - 0x60))   //ひらがなとカタカナ変換
 
-    if(usedWord.value.slice(-1) === 'ん' ||
+    if(usedWord.value.slice(-1) === 'ん' || //タブー設定
         usedWordList.value.some(word => word === usedWord.value)){
         usedWord.value = ''
         member.value.splice(currentIndex-1,1)

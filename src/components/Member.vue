@@ -1,24 +1,28 @@
 <script setup>
 import { ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { usePlayer } from '@/stores/pinia.js'
+
+const router = useRouter()
+const useMember = usePlayer()
 
 const members = ref(2)
 const playerNames = ref([])
 const startChecker = ref(false)
 
-const useMember = usePlayer()
-
 watch([() => members.value, () => playerNames.value.length],() => {
-    useMember.setPlayerName(playerNames.value)
-
     if(playerNames.value.length === members.value){
         startChecker.value = true
     }
 })
 
 const startGame = () => {
-    console.log(playerNames.value.length)
-    console.log(members.value)
+    if(playerNames.value.every(name => name !== '')){
+        useMember.setPlayerName(playerNames.value)
+        router.push({ name: 'Top' })
+    }else{
+        alert('名前が入っていない人がいます')
+    }
 }
 
 </script>
@@ -33,7 +37,7 @@ const startGame = () => {
                 <input type="text" v-model="playerNames[index-1]" class="mt-3">
             </div>
             <div class="toGame">
-                <router-link to="/Top" v-show="startChecker" @click="startGame">ゲームスタート！</router-link>
+                <button v-show="startChecker" @click="startGame">ゲームスタート！</button>
             </div>
         </div>
     </div>
