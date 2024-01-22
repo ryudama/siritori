@@ -20,8 +20,12 @@ const rule = ref(false)
 
 const addWord = () => {
     usedWord.value = usedWord.value.replace(/[\u30a1-\u30f6]/g, match => String.fromCharCode(match.charCodeAt(0) - 0x60))   //カタカナをひらがなに変換
-    if(usedWordList.value.length === 0){    //1人目専用
+    if(usedWordList.value.length === 0 && usedWord.value.slice(-1) !== 'ん' && /^[ぁ-んー]$/u.test(usedWord.value.slice(-1))){    //1人目専用
         usedWordList.value.push(usedWord.value) //使った言葉リストに格納
+        if(usedWord.value.slice(-1) === 'ー'){  //ー　がついたら、それを削る
+            usedWord.value = usedWord.value.slice(0, -1)
+            console.log(endWord.value)
+        }
         endWord.value = usedWord.value.slice(-1) //次の言葉の頭として格納
                             .replace(/っ/g, 'つ')   //小さい文字を大きく変更
                             .replace(/ゃ/g, 'や')
@@ -32,7 +36,6 @@ const addWord = () => {
                             .replace(/ぅ/g, 'う')
                             .replace(/ぇ/g, 'え')
                             .replace(/ぉ/g, 'お')
-        console.log(endWord.value)
         usedWord.value = ''
         currentIndex.value = (currentIndex.value + 1) % member.value.length
     }else if(endWord.value !== usedWord.value.slice(0,1) ||  //前の文字と次の文字が合ってない
@@ -45,6 +48,9 @@ const addWord = () => {
                 disqualification.value = true
     }else{  //続く時
         usedWordList.value.push(usedWord.value)
+        if(usedWord.value.slice(-1) === 'ー'){  //ー　がついたら、それを削る
+            usedWord.value = usedWord.value.slice(0, -1)
+        }
         endWord.value = usedWord.value.slice(-1) //次の言葉の頭として格納
                             .replace(/っ/g, 'つ')   //小さい文字を大きく変更
                             .replace(/ゃ/g, 'や')
@@ -55,7 +61,6 @@ const addWord = () => {
                             .replace(/ぅ/g, 'う')
                             .replace(/ぇ/g, 'え')
                             .replace(/ぉ/g, 'お')
-        console.log(endWord.value)
         usedWord.value = ''
         currentIndex.value = (currentIndex.value + 1) % member.value.length
     }
