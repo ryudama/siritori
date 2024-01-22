@@ -18,10 +18,13 @@ const explanation = ref(false)
 const rule = ref(false)
 
 const addWord = () => {
-    usedWord.value = usedWord.value.replace(/[\u30a1-\u30f6]/g, match => String.fromCharCode(match.charCodeAt(0) - 0x60))   //ひらがなとカタカナ変換
+    usedWord.value = usedWord.value.replace(/[\u30a1-\u30f6]/g, match => String.fromCharCode(match.charCodeAt(0) - 0x60))   //カタカナをひらがなに変換
 
-    if(usedWord.value.slice(-1) === 'ん' || //タブー設定
-        usedWordList.value.some(word => word === usedWord.value)){
+    //タブー設定
+    if(usedWord.value.slice(-1) === 'ん' || //ん　がついた時
+        !/^[ぁ-んー]$/u.test(usedWord.value.slice(-1)) ||    //ひらがなとー以外を言った時
+        usedWordList.value.some(word => word === usedWord.value)    //前と同じ言葉を言った時
+        ){
         usedWord.value = ''
         member.value.splice(currentIndex-1,1)
         currentIndex.value = (currentIndex.value) % member.value.length
