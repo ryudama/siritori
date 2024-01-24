@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from 'vue'
 import { useGameStart } from '@/stores/pinia.js'
 const usePinia = useGameStart()
 
@@ -17,6 +16,9 @@ const closeModal = () => {
 
 <template>
     <div class="modal" @click="closeModal">
+        <div class="close">
+            <button type="button" class="btn-close" aria-label="Close"></button>
+        </div>
         <div class="modal-content" @click.stop>
             <div class="title">しりとりとは</div>
             <div>　何の道具もいらず手軽にできる遊びのひとつとして、「しりとり」があります。<br>
@@ -79,5 +81,10 @@ const closeModal = () => {
 .toRule{
     display: flex;
     justify-content: flex-end;
+}
+
+.close{
+    position: relative;
+    left: 26%;
 }
 </style>

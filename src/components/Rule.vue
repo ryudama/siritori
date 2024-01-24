@@ -16,6 +16,9 @@ const closeModal = () => {
 
 <template>
     <div class="modal" @click="closeModal">
+        <div class="close">
+            <button type="button" class="btn-close" aria-label="Close"></button>
+        </div>
         <div class="modal-content" @click.stop>
             <div class="title">ルール説明</div>
             <div>①前に言った人の言葉の、一番最後の文字から始まる言葉を言って続けていく（ひらがなとカタカナは区別しない）</div>
@@ -76,5 +79,10 @@ const closeModal = () => {
 .toMember {    
     display: flex;
     justify-content: flex-end;
+}
+
+.close{
+    position: relative;
+    left: 26%;
 }
 </style>
