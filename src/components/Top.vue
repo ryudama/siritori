@@ -7,7 +7,7 @@ import Rule from './Rule.vue'
 
 const useMember= usePlayer()
 const member = ref([])
-// let lostMember = ref('')
+let lostMember = ref('')
 
 const usedWord = ref('')
 const usedWordList = ref([])
@@ -20,10 +20,8 @@ const explanation = ref(false)
 const rule = ref(false)
 
 const addWord = () => {
-    console.log("今の発言は"+currentIndex.value)
+    lostMember.value = ''
     console.log(member.value)
-
-    // lostMember.value = ''
     usedWord.value = usedWord.value.replace(/[\u30a1-\u30f6]/g, match => String.fromCharCode(match.charCodeAt(0) - 0x60))   //カタカナをひらがなに変換
     if((usedWordList.value.length === 0 && usedWord.value.slice(-1) !== 'ん' && /^[ぁ-んー]$/u.test(usedWord.value.slice(-1)))){    //1人目専用
         loop()
@@ -31,13 +29,9 @@ const addWord = () => {
             usedWord.value.slice(-1) === 'ん' || //ん　がついた時
             !/^[ぁ-んー]$/u.test(usedWord.value.slice(-1)) ||    //ひらがなとー以外を言った時
             usedWordList.value.some(word => word === usedWord.value)){    //前に言ったのと同じ言葉を言った時
-                console.log("タブー")
         usedWord.value = ''
-        // lostMember = member.value[currentIndex-1]
-        console.log("タブー言ったやつは"+(currentIndex).value)  //タブー言ったやつの特定はできている
+        lostMember.value = member.value[currentIndex.value]
         member.value.splice(currentIndex.value,1)
-        // member.value.splice(1,1) //番地をハードコードならできる
-        console.log("削除後"+member.value)
         currentIndex.value = (currentIndex.value) % member.value.length
         disqualification.value = true
     }else{  //続く時
@@ -63,8 +57,6 @@ const loop = () => {
                         .replace(/ぉ/g, 'お')
     usedWord.value = ''
     currentIndex.value = (currentIndex.value + 1) % member.value.length
-    console.log("次の発言は"+currentIndex.value)
-
 }
 
 const eraseDisqualification = () => {
@@ -79,8 +71,8 @@ const openRuleModal = () => {
     rule.value = !rule.value
 }
 
-const gaming = () => {
-    member.value = useMember.getPlayerName()
+const gaming = async () => {
+    member.value = await useMember.getPlayerName()
 }
 
 gaming()
@@ -100,7 +92,7 @@ gaming()
                     <span v-if="index === currentIndex">次は「{{ endWord }}」から始まる言葉です</span>
                 </div>
             </div>
-            <div v-if="disqualification">言ってはいけない言葉を言ったので、は失格です</div>
+            <div v-if="disqualification">言ってはいけない言葉を言ったので、{{ lostMember }}は失格です</div>
         </div>
         <Explanation v-if="explanation" @close="explanation = false"/>
         <Rule v-if="rule" @close="rule = false"/>
