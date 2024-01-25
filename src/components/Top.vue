@@ -1,13 +1,15 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { usePlayer } from '@/stores/pinia.js'
 
 import Explanation from './Explanation.vue'
 import Rule from './Rule.vue'
+import Congratulations from './Congratulations.vue'
 
 const useMember= usePlayer()
-const member = ref([])
-let lostMember = ref('')
+const members = ref([])
+const lostMember = ref('')
+const winner = ref('')
 
 const usedWord = ref('')
 const usedWordList = ref([])
@@ -18,10 +20,21 @@ const disqualification = ref(false)
 
 const explanation = ref(false)
 const rule = ref(false)
+const congratulations = ref(false)
+
+
+watch([() => members.value.length],() => {
+    console.log(members.value)
+    console.log(members.value.length)
+    if(members.value.length === 1){
+        console.log(members.value[0])
+        winner.value = members.value[0]
+        endGame()
+    }
+})
 
 const addWord = () => {
     lostMember.value = ''
-    console.log(member.value)
     usedWord.value = usedWord.value.replace(/[\u30a1-\u30f6]/g, match => String.fromCharCode(match.charCodeAt(0) - 0x60))   //カタカナをひらがなに変換
     if((usedWordList.value.length === 0 && usedWord.value.slice(-1) !== 'ん' && /^[ぁ-んー]$/u.test(usedWord.value.slice(-1)))){    //1人目専用
         loop()
@@ -30,9 +43,9 @@ const addWord = () => {
             !/^[ぁ-んー]$/u.test(usedWord.value.slice(-1)) ||    //ひらがなとー以外を言った時
             usedWordList.value.some(word => word === usedWord.value)){    //前に言ったのと同じ言葉を言った時
         usedWord.value = ''
-        lostMember.value = member.value[currentIndex.value]
-        member.value.splice(currentIndex.value,1)
-        currentIndex.value = (currentIndex.value) % member.value.length
+        lostMember.value = members.value[currentIndex.value]
+        members.value.splice(currentIndex.value,1)
+        currentIndex.value = (currentIndex.value) % members.value.length
         disqualification.value = true
     }else{  //続く時
         loop()
@@ -56,7 +69,7 @@ const loop = () => {
                         .replace(/ぇ/g, 'え')
                         .replace(/ぉ/g, 'お')
     usedWord.value = ''
-    currentIndex.value = (currentIndex.value + 1) % member.value.length
+    currentIndex.value = (currentIndex.value + 1) % members.value.length
 }
 
 const eraseDisqualification = () => {
@@ -72,7 +85,11 @@ const openRuleModal = () => {
 }
 
 const gaming = async () => {
-    member.value = await useMember.getPlayerName()
+    members.value = await useMember.getPlayerName()
+}
+
+const endGame = () => {
+    congratulations.value = true
 }
 
 gaming()
@@ -85,17 +102,18 @@ gaming()
             <button class="rule" @click="openRuleModal">ルール</button>
         </div>
         <div class="modal-content">
-            <div v-for="(name, index) in member" :key="index">
+            <div v-for="(name, index) in members" :key="index">
                 <div>{{ name }}
                     <input type="text" v-if="index === currentIndex" v-model="usedWord" @focus="eraseDisqualification" class="mt-3 ms-3">
                     <button v-if="index === currentIndex" @click="addWord" class="ms-3 me-3">回答</button>
-                    <span v-if="index === currentIndex">次は「{{ endWord }}」から始まる言葉です</span>
+                    <span v-if="index === currentIndex && endWord !== ''">次は「{{ endWord }}」から始まる言葉です</span>
                 </div>
             </div>
             <div v-if="disqualification">言ってはいけない言葉を言ったので、{{ lostMember }}は失格です</div>
         </div>
         <Explanation v-if="explanation" @close="explanation = false"/>
         <Rule v-if="rule" @close="rule = false"/>
+        <Congratulations v-if="congratulations" :winner="winner"/>
     </div>
 </template>
 
