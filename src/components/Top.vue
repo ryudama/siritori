@@ -24,10 +24,7 @@ const congratulations = ref(false)
 
 
 watch([() => members.value.length],() => {
-    console.log(members.value)
-    console.log(members.value.length)
     if(members.value.length === 1){
-        console.log(members.value[0])
         winner.value = members.value[0]
         endGame()
     }

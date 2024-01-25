@@ -34,7 +34,8 @@ const closeModal = () => {
 
             例えば「”あ”で始まることばは何！？」のように、１つの事柄（条件・情報）からいろいろなことを思いつく力を「拡散的思考力」と言います。<br><br>
 
-            　しりとり遊びはこの「拡散的思考力」を高めるトレーニングになります。<span v-if="usePinia.getExplaned()">実際にやってみましょう！次のページでは、ルールを説明します(このページは後で確認できます)</span>
+            　しりとり遊びはこの「拡散的思考力」を高めるトレーニングになります。
+            <span v-if="usePinia.getExplaned()">実際にやってみましょう！次のページでは、ルールを説明します(このページは後で確認できます)</span>
             </div>
             <div class="toRule" v-if="usePinia.getExplaned()">
                 <router-link to="/Rule" @click="start">ルール説明へ▶️</router-link>

@@ -1,5 +1,6 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { useGameStart } from '@/stores/pinia.js'
+const usePinia = useGameStart()
 
 const props = defineProps({
     winner:String
@@ -9,7 +10,9 @@ const props = defineProps({
 <template>
     <div class="modal">
         <div class="modal-content">
-            <div>{{ winner }}</div>
+            <div>🏆優勝おめでとう！🥇</div>
+            <div class="mt-5">{{ winner }}　が優勝です！</div>
+        <div class="mt-5"><router-link to="/Member">もう一度遊ぶ</router-link></div>
         </div>
     </div>
 </template>
@@ -32,7 +35,7 @@ const props = defineProps({
 
 .modal-content{
     width: 40%;
-    height: 90%;
+    height: 70%;
     background-color: white;
     padding: 20px;
     border-radius: 5px;
@@ -41,6 +44,8 @@ const props = defineProps({
     flex-direction: column;
     z-index: 1001;
     overflow: auto;
+    font-size: 30px;
+    text-align: center;
 }
 
 </style>
